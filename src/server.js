@@ -1,6 +1,25 @@
+const app = require('fastify')({ logger: true });
 const { PORT } = require('./common/config');
-const app = require('./app');
 
-app.listen(PORT, () =>
-  console.log(`App is running on http://localhost:${PORT}`)
-);
+app.get('/smth', (req, rep) => {
+  rep.send({ replywith: 'Hi, fucker!' });
+});
+
+// app.get('/smth/:id', (req, rep) => {
+//   const { id } = req.params;
+//   const item = items.find((item) => {
+//     item.id === id;
+//   });
+//   rep.send(item);
+// });
+
+const start = async () => {
+  try {
+    app.listen(PORT);
+  } catch (error) {
+    app.log.error(error);
+    process.exit(1);
+  }
+};
+
+start();
