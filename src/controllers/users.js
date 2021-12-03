@@ -1,46 +1,37 @@
 const { v4: uuidv4 } = require('uuid');
+const omitProp = require('../utils/omit-prop');
 let users = require('../DB/users.db');
 
-// const user = {
-//   type: 'object',
-//   properties: {
-//     id: { type: 'string' },
-//     name: { type: 'string' },
-//     login: { type: 'string' },
-//     password: { type: 'string' },
-//   },
-// };
-
 const getUsers = (req, rep) => {
-  rep.send(users);
+  rep.send(users.map((user) => omitProp(user, 'password')));
 };
 
 const getUser = (req, rep) => {
   const { id } = req.params;
   const userToSend = users.find((user) => user.id === id);
-  rep.send(userToSend);
+  rep.send(omitProp(userToSend, 'password'));
 };
 
 const addUser = (req, rep) => {
-  const { userProps } = req.body;
+  const userProps = req.body;
   const user = {
-    id: uuidv4,
-    userProps,
+    id: uuidv4(),
+    ...userProps,
   };
 
   users = [...users, user];
 
-  rep.code(201).send(user);
+  rep.code(201).send(omitProp(user, 'password'));
 };
 
 const updateUser = (req, rep) => {
-  const { userProps } = req.body;
+  const userProps = req.body;
   const { id } = req.params;
 
-  users = users.map((user) => (user.id === id ? { id, userProps } : user));
+  users = users.map((user) => (user.id === id ? { id, ...userProps } : user));
   const user = users.find((usr) => usr.id === id);
 
-  rep.send(user);
+  rep.send(omitProp(user, 'password'));
 };
 
 const deleteUser = (req, rep) => {

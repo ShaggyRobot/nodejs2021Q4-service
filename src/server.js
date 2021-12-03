@@ -1,9 +1,11 @@
 const app = require('fastify')({ logger: true });
 const { PORT } = require('./common/config');
 
-app.get('/smth', (req, rep) => {
-  rep.send({ replywith: 'Hi, fucker!' });
-});
+app.register(require('./routes/users'))
+
+// app.get('/smth', (req, rep) => {
+//   rep.send({ replywith: 'Hi, fucker!' });
+// });
 
 // app.get('/smth/:id', (req, rep) => {
 //   const { id } = req.params;
