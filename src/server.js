@@ -1,19 +1,9 @@
 const app = require('fastify')({ logger: true });
 const { PORT } = require('./common/config');
 
-app.register(require('./routes/users'))
-
-// app.get('/smth', (req, rep) => {
-//   rep.send({ replywith: 'Hi, fucker!' });
-// });
-
-// app.get('/smth/:id', (req, rep) => {
-//   const { id } = req.params;
-//   const item = items.find((item) => {
-//     item.id === id;
-//   });
-//   rep.send(item);
-// });
+app.register(require('./routes/users.routes'));
+app.register(require('./routes/boards.routes'));
+app.register(require('./routes/tasks.routes'));
 
 const start = async () => {
   try {
