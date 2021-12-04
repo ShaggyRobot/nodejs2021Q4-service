@@ -5,13 +5,12 @@ app.register(require('./routes/users.routes'));
 app.register(require('./routes/boards.routes'));
 app.register(require('./routes/tasks.routes'));
 
-const start = async () => {
+// IIFE
+(async () => {
   try {
     app.listen(PORT);
   } catch (error) {
     app.log.error(error);
     process.exit(1);
   }
-};
-
-start();
+})();

@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const { getTasksDb, putTasksDb } = require('../DB/tasks.db');
 
+// GET boards/:boardId/tasks - get all tasks
 const getTasks = (req, rep) => {
   const tasks = getTasksDb();
   const { id } = req.params;
@@ -10,6 +11,7 @@ const getTasks = (req, rep) => {
   rep.send(tasksToSend);
 };
 
+// GET boards/:boardId/tasks/:taskId - get the task by id
 const getTask = (req, rep) => {
   const tasks = getTasksDb();
   const { id } = req.params;
@@ -23,6 +25,7 @@ const getTask = (req, rep) => {
   }
 };
 
+// POST boards/:boardId/tasks - create task
 const addTask = (req, rep) => {
   let tasks = getTasksDb();
   const taskProps = req.body;
@@ -40,6 +43,7 @@ const addTask = (req, rep) => {
   rep.code(201).send(task);
 };
 
+// PUT boards/:boardId/tasks/:taskId - update task
 const updateTask = (req, rep) => {
   let tasks = getTasksDb();
   const taskProps = req.body;
@@ -53,6 +57,7 @@ const updateTask = (req, rep) => {
   rep.send(taskToSend);
 };
 
+// DELETE boards/:boardId/tasks/:taskId - delete task
 const deleteTask = (req, rep) => {
   let tasks = getTasksDb();
   const { id } = req.params;

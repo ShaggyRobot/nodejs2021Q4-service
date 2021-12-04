@@ -3,10 +3,12 @@ const omitProp = require('../utils/omit-prop');
 let users = require('../DB/users.db');
 const { getTasksDb, putTasksDb } = require('../DB/tasks.db');
 
+// GET /users - get all users (remove password from response)
 const getUsers = (req, rep) => {
   rep.send(users.map((user) => omitProp(user, 'password')));
 };
 
+// GET /users/:userId - get the user by id (ex. “/users/123”) (remove password from response)
 const getUser = (req, rep) => {
   const { id } = req.params;
 
@@ -18,6 +20,7 @@ const getUser = (req, rep) => {
   }
 };
 
+// POST /users - create user
 const addUser = (req, rep) => {
   const userProps = req.body;
 
@@ -30,6 +33,7 @@ const addUser = (req, rep) => {
   rep.code(201).send(omitProp(user, 'password'));
 };
 
+// PUT /users/:userId - update user
 const updateUser = (req, rep) => {
   const userProps = req.body;
   const { id } = req.params;
@@ -40,6 +44,7 @@ const updateUser = (req, rep) => {
   rep.send(omitProp(user, 'password'));
 };
 
+// DELETE /users/:userId - delete user, all Tasks where User is assignee should be updated to put userId = null.
 const deleteUser = (req, rep) => {
   let tasks = getTasksDb();
   const { id } = req.params;
@@ -52,7 +57,9 @@ const deleteUser = (req, rep) => {
     }
     return tsk;
   });
+
   putTasksDb(tasks);
+
   rep.send({ message: `User ${id} has been removed.` });
 };
 

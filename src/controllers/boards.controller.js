@@ -2,10 +2,12 @@ const { v4: uuidv4 } = require('uuid');
 let boards = require('../DB/boards.db');
 const { getTasksDb, putTasksDb } = require('../DB/tasks.db');
 
+// GET /boards - get all boards
 const getBoards = (req, rep) => {
   rep.send(boards);
 };
 
+// GET /boards/:boardId - get the board by id
 const getBoard = (req, rep) => {
   const { id } = req.params;
   const boardToSend = boards.find((board) => board.id === id);
@@ -17,6 +19,7 @@ const getBoard = (req, rep) => {
   }
 };
 
+// POST /boards - create board
 const addBoard = (req, rep) => {
   const boardProps = req.body;
 
@@ -30,6 +33,7 @@ const addBoard = (req, rep) => {
   rep.code(201).send(board);
 };
 
+// PUT /boards/:boardId - update board
 const updateBoard = (req, rep) => {
   const boardProps = req.body;
   const { id } = req.params;
@@ -42,6 +46,7 @@ const updateBoard = (req, rep) => {
   rep.send(board);
 };
 
+// DELETE /boards/:boardId - delete board Tasks should be deleted as well.
 const deleteBoard = (req, rep) => {
   let tasks = getTasksDb()
   const { id } = req.params;
@@ -50,7 +55,7 @@ const deleteBoard = (req, rep) => {
   tasks = tasks.filter((tsk) => tsk.boardId !== id)
 
   putTasksDb(tasks)
-  
+
   rep.send({ message: `Board ${id} has been removed.` });
 };
 
