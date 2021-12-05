@@ -8,6 +8,7 @@ app.register(require('./routes/tasks.routes'));
 
 app.register(require('fastify-swagger'), {
   mode: 'static',
+  routePrefix: '/doc',
   exposeRoute: true,
   specification: {
     path: path.resolve('_dirname', '../doc/api.yaml'),
@@ -23,3 +24,7 @@ app.register(require('fastify-swagger'), {
     process.exit(1);
   }
 })();
+
+
+
+
