@@ -1,3 +1,11 @@
-const boards = [];
+let boards = [];
 
-module.exports = boards;
+function putBoardsDb(newBoards) {
+  boards = newBoards;
+}
+
+function getBoardsDb() {
+  return boards;
+}
+
+module.exports = { getBoardsDb, putBoardsDb };

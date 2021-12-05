@@ -1,4 +1,4 @@
-const app = require('fastify')({ logger: true });
+const app = require('fastify')({ logger: false });
 const { PORT } = require('./common/config');
 
 app.register(require('./routes/users.routes'));
