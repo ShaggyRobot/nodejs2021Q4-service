@@ -9,7 +9,7 @@ const {
 const Task = {
   type: 'object',
   properties: {
-    id: { type: 'string' },
+    id: { type: 'string', format: 'uuid' },
     title: { type: 'string' },
     order: { type: 'number' },
     description: { type: 'string' },

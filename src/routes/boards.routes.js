@@ -9,7 +9,7 @@ const {
 const Column = {
   type: 'object',
   properties: {
-    id: { type: 'string' },
+    id: { type: 'string', format: 'uuid' },
     title: { type: 'string' },
     order: { type: 'number' },
   },
@@ -18,7 +18,7 @@ const Column = {
 const Board = {
   type: 'object',
   properties: {
-    id: { type: 'string' },
+    id: { type: 'string', format: 'uuid' },
     title: { type: 'string' },
     columns: {
       type: 'array',
