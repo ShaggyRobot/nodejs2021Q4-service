@@ -1,10 +1,4 @@
-const {
-  getTasks,
-  getTask,
-  addTask,
-  updateTask,
-  deleteTask,
-} = require('../controllers/tasks.controller');
+const { getTasks, getTask, addTask, updateTask, deleteTask } = require('../controllers/tasks.controller');
 
 const Task = {
   type: 'object',
@@ -47,13 +41,7 @@ const addTaskOpts = {
   schema: {
     body: {
       type: 'object',
-      required: [
-        'title',
-        'order',
-        'description',
-        'userId',
-        'boardId',
-      ],
+      required: ['title', 'order', 'description', 'userId', 'boardId'],
       properties: {
         title: { type: 'string' },
         order: { type: 'number' },

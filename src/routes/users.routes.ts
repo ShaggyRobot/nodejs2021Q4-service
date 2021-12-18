@@ -1,10 +1,4 @@
-const {
-  getUsers,
-  getUser,
-  addUser,
-  updateUser,
-  deleteUser,
-} = require('../controllers/users.controller');
+const { getUsers, getUser, addUser, updateUser, deleteUser } = require('../controllers/users.controller');
 
 const User = {
   type: 'object',

@@ -8,4 +8,4 @@ function getUsersDb() {
   return users;
 }
 
-module.exports = { getUsersDb, putUsersDb };
+export {putUsersDb, getUsersDb}

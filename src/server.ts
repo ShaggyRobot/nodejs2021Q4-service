@@ -24,7 +24,3 @@ app.register(require('fastify-swagger'), {
     process.exit(1);
   }
 })();
-
-
-
-

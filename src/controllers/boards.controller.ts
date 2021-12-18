@@ -13,7 +13,7 @@ const getBoard = (req, rep) => {
   const boards = getBoardsDb();
   const { id } = req.params;
 
-  const boardToSend = boards.find((board) => board.id === id);
+  const boardToSend = boards.find(board => board.id === id);
 
   if (boardToSend) {
     rep.send(boardToSend);
@@ -44,10 +44,8 @@ const updateBoard = (req, rep) => {
   const boardProps = req.body;
   const { id } = req.params;
 
-  boards = boards.map((board) =>
-    board.id === id ? { id, ...boardProps } : board
-  );
-  const board = boards.find((brd) => brd.id === id);
+  boards = boards.map(board => (board.id === id ? { id, ...boardProps } : board));
+  const board = boards.find(brd => brd.id === id);
 
   putBoardsDb(boards);
   rep.send(board);
@@ -55,14 +53,14 @@ const updateBoard = (req, rep) => {
 
 // DELETE /boards/:boardId - delete board Tasks should be deleted as well.
 const deleteBoard = (req, rep) => {
-  let boards = getBoardsDb()
+  let boards = getBoardsDb();
   let tasks = getTasksDb();
   const { id } = req.params;
 
-  boards = boards.filter((brd) => brd.id !== id);
-  tasks = tasks.filter((tsk) => tsk.boardId !== id);
+  boards = boards.filter(brd => brd.id !== id);
+  tasks = tasks.filter(tsk => tsk.boardId !== id);
 
-  putBoardsDb(boards)
+  putBoardsDb(boards);
   putTasksDb(tasks);
 
   rep.send({ message: `Board ${id} has been removed.` });

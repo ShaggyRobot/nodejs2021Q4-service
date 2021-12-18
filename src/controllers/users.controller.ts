@@ -1,12 +1,18 @@
-const { v4: uuidv4 } = require('uuid');
-const omitProp = require('../utils/omit-prop');
-const { getUsersDb, putUsersDb } = require('../DB/users.db');
-const { getTasksDb, putTasksDb } = require('../DB/tasks.db');
+// const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
+// const omitProp = require('../utils/omit-prop');
+import omitProp from '@src/utils/omit-prop';
+
+// const { getUsersDb, putUsersDb } = require('../DB/users.db');
+import {putUsersDb, getUsersDb} from '@src/DB/users.db';
+
+// const { getTasksDb, putTasksDb } = require('../DB/tasks.db');
+import { putTasksDb, getTasksDb } from '@src/DB/tasks.db';
 
 // GET /users - get all users (remove password from response)
 const getUsers = (req, rep) => {
   const users = getUsersDb();
-  rep.send(users.map((user) => omitProp(user, 'password')));
+  rep.send(users.map(user => omitProp(user, 'password')));
 };
 
 // GET /users/:userId - get the user by id (ex. “/users/123”) (remove password from response)
@@ -14,7 +20,7 @@ const getUser = (req, rep) => {
   const users = getUsersDb();
   const { id } = req.params;
 
-  const userToSend = users.find((user) => user.id === id);
+  const userToSend = users.find(user => user.id === id);
   if (userToSend) {
     rep.send(omitProp(userToSend, 'password'));
   } else {
@@ -43,8 +49,8 @@ const updateUser = (req, rep) => {
   const userProps = req.body;
   const { id } = req.params;
 
-  users = users.map((user) => (user.id === id ? { id, ...userProps } : user));
-  const user = users.find((usr) => usr.id === id);
+  users = users.map(user => (user.id === id ? { id, ...userProps } : user));
+  const user = users.find(usr => usr.id === id);
 
   putUsersDb(users);
   rep.send(omitProp(user, 'password'));
@@ -56,8 +62,8 @@ const deleteUser = (req, rep) => {
   let tasks = getTasksDb();
   const { id } = req.params;
 
-  users = users.filter((usr) => usr.id !== id);
-  tasks = tasks.map((task) => {
+  users = users.filter(usr => usr.id !== id);
+  tasks = tasks.map(task => {
     const tsk = task;
     if (tsk.userId === id) {
       tsk.userId = null;

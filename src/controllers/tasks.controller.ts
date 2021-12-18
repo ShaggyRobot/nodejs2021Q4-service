@@ -6,7 +6,7 @@ const getTasks = (req, rep) => {
   const tasks = getTasksDb();
   const { id } = req.params;
 
-  const tasksToSend = tasks.filter((task) => task.boardId === id);
+  const tasksToSend = tasks.filter(task => task.boardId === id);
 
   rep.send(tasksToSend);
 };
@@ -16,7 +16,7 @@ const getTask = (req, rep) => {
   const tasks = getTasksDb();
   const { id } = req.params;
 
-  const taskToSend = tasks.find((task) => task.id === id);
+  const taskToSend = tasks.find(task => task.id === id);
 
   if (taskToSend) {
     rep.send(taskToSend);
@@ -49,8 +49,8 @@ const updateTask = (req, rep) => {
   const taskProps = req.body;
   const { id } = req.params;
 
-  tasks = tasks.map((task) => (task.id === id ? { id, ...taskProps } : task));
-  const taskToSend = tasks.find((usr) => usr.id === id);
+  tasks = tasks.map(task => (task.id === id ? { id, ...taskProps } : task));
+  const taskToSend = tasks.find(usr => usr.id === id);
 
   putTasksDb(tasks);
 
@@ -62,7 +62,7 @@ const deleteTask = (req, rep) => {
   let tasks = getTasksDb();
   const { id } = req.params;
 
-  tasks = tasks.filter((tsk) => tsk.id !== id);
+  tasks = tasks.filter(tsk => tsk.id !== id);
 
   putTasksDb(tasks);
 
