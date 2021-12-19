@@ -1,5 +1,4 @@
-import { RouteShorthandOptions } from 'fastify';
-import { FastifyInstance } from 'fastify';
+import { RouteShorthandOptions, FastifyInstance } from 'fastify';
 import { getTasks, getTask, addTask, updateTask, deleteTask } from '../controllers/tasks.controller.js';
 
 const Task = {
