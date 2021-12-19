@@ -7,10 +7,18 @@ interface IUser {
 
 let users: Array<IUser> = [];
 
+/**
+ * Replaces existing users array with updated users array
+ * @param newUsers - new users array
+ */
 function putUsersDb(newUsers: Array<IUser>): void {
   users = newUsers;
 }
 
+/**
+ * Returns all users
+ * @returns array of users
+ */
 function getUsersDb(): Array<IUser> {
   return users;
 }

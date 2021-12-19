@@ -17,13 +17,14 @@ module.exports = {
     ecmaVersion: 13,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'prettier', 'import'],
+  plugins: ['@typescript-eslint', 'prettier', 'import', '@typescript-eslint/eslint-plugin', 'eslint-plugin-tsdoc'],
   rules: {
     // 'comma-dangle': 0,
     'prettier/prettier': 'error',
     'import/extensions': 'off',
     'no-console': 'warn',
     '@typescript-eslint/explicit-function-return-type': 'error',
+    'tsdoc/syntax': 'error',
   },
   settings: {
     'import/parsers': {
