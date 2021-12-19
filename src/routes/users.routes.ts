@@ -1,4 +1,6 @@
-const { getUsers, getUser, addUser, updateUser, deleteUser } = require('../controllers/users.controller');
+import { FastifyInstance, RouteShorthandOptions } from 'fastify';
+
+import { getUsers, getUser, addUser, updateUser, deleteUser } from '../controllers/users.controller.js';
 
 const User = {
   type: 'object',
@@ -74,7 +76,7 @@ const deleteUserOpts = {
   handler: deleteUser,
 };
 
-function routesUsers(app, options, done) {
+function routesUsers(app: FastifyInstance, opts: RouteShorthandOptions, done: () => void): void {
   app.get('/users', getUsersOpts);
 
   app.get('/users/:id', getUserOpts);
@@ -88,4 +90,4 @@ function routesUsers(app, options, done) {
   done();
 }
 
-module.exports = routesUsers;
+export default routesUsers;

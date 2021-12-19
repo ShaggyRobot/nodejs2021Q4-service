@@ -1,11 +1,18 @@
-let users = [];
+interface IUser {
+  id?: string;
+  name: string;
+  login: string;
+  password: string;
+}
 
-function putUsersDb(newUsers) {
+let users: Array<IUser> = [];
+
+function putUsersDb(newUsers: Array<IUser>): void {
   users = newUsers;
 }
 
-function getUsersDb() {
+function getUsersDb(): Array<IUser> {
   return users;
 }
 
-export {putUsersDb, getUsersDb}
+export { putUsersDb, getUsersDb, IUser };

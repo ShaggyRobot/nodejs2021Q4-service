@@ -1,4 +1,6 @@
-const { getTasks, getTask, addTask, updateTask, deleteTask } = require('../controllers/tasks.controller');
+import { RouteShorthandOptions } from 'fastify';
+import { FastifyInstance } from 'fastify';
+import { getTasks, getTask, addTask, updateTask, deleteTask } from '../controllers/tasks.controller.js';
 
 const Task = {
   type: 'object',
@@ -80,7 +82,7 @@ const deleteTasksOpts = {
   handler: deleteTask,
 };
 
-function routesTAsks(app, options, done) {
+function routesTAsks(app: FastifyInstance, options: RouteShorthandOptions, done: () => void): void {
   app.get('/boards/:id/tasks', getTasksOpts);
 
   app.get('/boards/:id/tasks/:id', getTaskOpts);
@@ -94,4 +96,4 @@ function routesTAsks(app, options, done) {
   done();
 }
 
-module.exports = routesTAsks;
+export default routesTAsks;

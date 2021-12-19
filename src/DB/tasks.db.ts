@@ -1,12 +1,21 @@
-let tasks = [];
+interface ITask {
+  id?: string;
+  title: string;
+  order: string;
+  description: string;
+  userId: string | null;
+  boardId: string | undefined;
+  columnId: string;
+}
 
-function putTasksDb(newTasks) {
+let tasks: Array<ITask> = [];
+
+function putTasksDb(newTasks: Array<ITask>): void {
   tasks = newTasks;
 }
 
-function getTasksDb() {
+function getTasksDb(): ITask[] {
   return tasks;
 }
 
-export {putTasksDb, getTasksDb}
-
+export { putTasksDb, getTasksDb, ITask };

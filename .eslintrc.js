@@ -23,12 +23,13 @@ module.exports = {
     'prettier/prettier': 'error',
     'import/extensions': 'off',
     'no-console': 'warn',
+    '@typescript-eslint/explicit-function-return-type': 'error',
   },
   settings: {
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts'],
     },
-    'inport/resolver': {
+    'import/resolver': {
       typescript: {
         alwaysTryTypes: true, // try to resolve types under '<root>@types' directory
         project: './tsconfig.json',

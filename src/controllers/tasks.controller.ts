@@ -1,18 +1,25 @@
-const { v4: uuidv4 } = require('uuid');
-const { getTasksDb, putTasksDb } = require('../DB/tasks.db');
+import { v4 as uuidv4 } from 'uuid';
+import { FastifyReply, FastifyRequest, RequestGenericInterface } from 'fastify';
+
+import { getTasksDb, putTasksDb, ITask } from '../DB/tasks.db.js';
+
+interface IreqTask extends RequestGenericInterface {
+  Params: { id: string | undefined };
+  Body: ITask;
+}
 
 // GET boards/:boardId/tasks - get all tasks
-const getTasks = (req, rep) => {
+const getTasks = (req: FastifyRequest<IreqTask>, rep: FastifyReply): void => {
   const tasks = getTasksDb();
   const { id } = req.params;
-
+  console.log(id);
   const tasksToSend = tasks.filter(task => task.boardId === id);
 
   rep.send(tasksToSend);
 };
 
 // GET boards/:boardId/tasks/:taskId - get the task by id
-const getTask = (req, rep) => {
+const getTask = (req: FastifyRequest<IreqTask>, rep: FastifyReply): void => {
   const tasks = getTasksDb();
   const { id } = req.params;
 
@@ -26,7 +33,7 @@ const getTask = (req, rep) => {
 };
 
 // POST boards/:boardId/tasks - create task
-const addTask = (req, rep) => {
+const addTask = (req: FastifyRequest<IreqTask>, rep: FastifyReply): void => {
   let tasks = getTasksDb();
   const taskProps = req.body;
   const boardId = req.params.id;
@@ -35,16 +42,21 @@ const addTask = (req, rep) => {
     id: uuidv4(),
     ...taskProps,
   };
-  task.boardId = boardId;
+  if (boardId !== 'undefined') {
+    task.boardId = boardId;
+  } else {
+    task.boardId = undefined;
+  }
 
   tasks = [...tasks, task];
+  // console.log(tasks);
   putTasksDb(tasks);
 
   rep.code(201).send(task);
 };
 
 // PUT boards/:boardId/tasks/:taskId - update task
-const updateTask = (req, rep) => {
+const updateTask = (req: FastifyRequest<IreqTask>, rep: FastifyReply): void => {
   let tasks = getTasksDb();
   const taskProps = req.body;
   const { id } = req.params;
@@ -58,7 +70,7 @@ const updateTask = (req, rep) => {
 };
 
 // DELETE boards/:boardId/tasks/:taskId - delete task
-const deleteTask = (req, rep) => {
+const deleteTask = (req: FastifyRequest<IreqTask>, rep: FastifyReply): void => {
   let tasks = getTasksDb();
   const { id } = req.params;
 
@@ -69,10 +81,4 @@ const deleteTask = (req, rep) => {
   rep.send({ message: `Task ${id} has been removed.` });
 };
 
-module.exports = {
-  getTasks,
-  getTask,
-  addTask,
-  updateTask,
-  deleteTask,
-};
+export { getTasks, getTask, addTask, updateTask, deleteTask };
