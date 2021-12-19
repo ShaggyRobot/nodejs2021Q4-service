@@ -1,15 +1,22 @@
-const { v4: uuidv4 } = require('uuid');
-const { getBoardsDb, putBoardsDb } = require('../DB/boards.db');
-const { getTasksDb, putTasksDb } = require('../DB/tasks.db');
+import { v4 as uuidv4 } from 'uuid';
+import { FastifyReply, FastifyRequest, RequestGenericInterface } from 'fastify';
+
+import { getBoardsDb, putBoardsDb, IBoard } from '../DB/boards.db.js';
+import { getTasksDb, putTasksDb } from '../DB/tasks.db.js';
+
+interface IreqBoards extends RequestGenericInterface {
+  Params: { id: string };
+  Body: IBoard;
+}
 
 // GET /boards - get all boards
-const getBoards = (req, rep) => {
+const getBoards = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
   const boards = getBoardsDb();
   rep.send(boards);
 };
 
 // GET /boards/:boardId - get the board by id
-const getBoard = (req, rep) => {
+const getBoard = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
   const boards = getBoardsDb();
   const { id } = req.params;
 
@@ -23,7 +30,7 @@ const getBoard = (req, rep) => {
 };
 
 // POST /boards - create board
-const addBoard = (req, rep) => {
+const addBoard = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
   let boards = getBoardsDb();
   const boardProps = req.body;
 
@@ -39,7 +46,7 @@ const addBoard = (req, rep) => {
 };
 
 // PUT /boards/:boardId - update board
-const updateBoard = (req, rep) => {
+const updateBoard = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
   let boards = getBoardsDb();
   const boardProps = req.body;
   const { id } = req.params;
@@ -52,7 +59,7 @@ const updateBoard = (req, rep) => {
 };
 
 // DELETE /boards/:boardId - delete board Tasks should be deleted as well.
-const deleteBoard = (req, rep) => {
+const deleteBoard = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
   let boards = getBoardsDb();
   let tasks = getTasksDb();
   const { id } = req.params;
@@ -66,10 +73,4 @@ const deleteBoard = (req, rep) => {
   rep.send({ message: `Board ${id} has been removed.` });
 };
 
-module.exports = {
-  getBoard,
-  getBoards,
-  addBoard,
-  updateBoard,
-  deleteBoard,
-};
+export { getBoard, getBoards, addBoard, updateBoard, deleteBoard };

@@ -1,11 +1,44 @@
-let boards = [];
+interface IColumn {
+  id?: string;
+  title: string;
+  order: number;
+}
 
-function putBoardsDb(newBoards) {
+interface IBoard {
+  id?: string;
+  title: string;
+  columns: IColumn[];
+}
+
+let boards: IBoard[] = [];
+
+function putBoardsDb(newBoards: IBoard[]): void {
   boards = newBoards;
 }
 
-function getBoardsDb() {
+function getBoardsDb(): IBoard[] {
   return boards;
 }
 
-module.exports = { getBoardsDb, putBoardsDb };
+export { getBoardsDb, putBoardsDb, IBoard };
+
+// const Column = {
+//   type: 'object',
+//   properties: {
+//     id: { type: 'string', format: 'uuid' },
+//     title: { type: 'string' },
+//     order: { type: 'number' },
+//   },
+// };
+
+// const Board = {
+//   type: 'object',
+//   properties: {
+//     id: { type: 'string', format: 'uuid' },
+//     title: { type: 'string' },
+//     columns: {
+//       type: 'array',
+//       column: Column,
+//     },
+//   },
+// };

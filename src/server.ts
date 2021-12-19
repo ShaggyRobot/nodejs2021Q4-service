@@ -5,11 +5,13 @@ import cfg from './common/config.js';
 
 import routeUsers from './routes/users.routes.js';
 import routeTasks from './routes/tasks.routes.js';
+import routeBoards from './routes/boards.routes.js';
 
 const app: FastifyInstance = Fastify({ logger: false });
 
 app.register(routeUsers);
 app.register(routeTasks);
+app.register(routeBoards);
 // app.register(require('./routes/boards.routes'));
 // app.register(require('./routes/tasks.routes'));
 

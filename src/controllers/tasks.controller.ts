@@ -4,7 +4,7 @@ import { FastifyReply, FastifyRequest, RequestGenericInterface } from 'fastify';
 import { getTasksDb, putTasksDb, ITask } from '../DB/tasks.db.js';
 
 interface IreqTask extends RequestGenericInterface {
-  Params: { id: string | undefined };
+  Params: { id: string };
   Body: ITask;
 }
 
@@ -12,7 +12,7 @@ interface IreqTask extends RequestGenericInterface {
 const getTasks = (req: FastifyRequest<IreqTask>, rep: FastifyReply): void => {
   const tasks = getTasksDb();
   const { id } = req.params;
-  console.log(id);
+
   const tasksToSend = tasks.filter(task => task.boardId === id);
 
   rep.send(tasksToSend);
@@ -42,14 +42,9 @@ const addTask = (req: FastifyRequest<IreqTask>, rep: FastifyReply): void => {
     id: uuidv4(),
     ...taskProps,
   };
-  if (boardId !== 'undefined') {
-    task.boardId = boardId;
-  } else {
-    task.boardId = undefined;
-  }
+  task.boardId = boardId;
 
   tasks = [...tasks, task];
-  // console.log(tasks);
   putTasksDb(tasks);
 
   rep.code(201).send(task);

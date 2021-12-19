@@ -1,4 +1,5 @@
-const { getBoard, getBoards, addBoard, updateBoard, deleteBoard } = require('../controllers/boards.controller');
+import { FastifyInstance, RouteShorthandOptions } from 'fastify';
+import { getBoard, getBoards, addBoard, updateBoard, deleteBoard } from '../controllers/boards.controller.js';
 
 const Column = {
   type: 'object',
@@ -83,7 +84,7 @@ const deleteBoardOpts = {
   handler: deleteBoard,
 };
 
-function routesBoards(app, options, done) {
+function routesBoards(app: FastifyInstance, options: RouteShorthandOptions, done: () => void): void {
   app.get('/boards', getBoardsOpts);
 
   app.get('/boards/:id', getBoardOpts);
@@ -97,4 +98,4 @@ function routesBoards(app, options, done) {
   done();
 }
 
-module.exports = routesBoards;
+export default routesBoards;
