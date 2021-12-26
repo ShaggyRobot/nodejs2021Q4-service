@@ -17,7 +17,7 @@ const transport = pino.transport(<TransportMultiOptions>{
       target: 'pino/file',
       level: 'error',
       options: {
-        destination: 'logs/errors.log',
+        destination: 'logs/errors.txt',
         mkdir: true,
       },
     },

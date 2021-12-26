@@ -13,10 +13,19 @@ app.register(routeUsers);
 app.register(routeTasks);
 app.register(routeBoards);
 
-app.addHook('onError', (request, reply, error) => {
-  if (error) {
-    process.exit(1);
+app.addHook('onError', request => {
+  if (request.body) {
+    app.log.error({ reqID: request.id, body: request.body });
   }
+  process.exit(1);
+});
+
+app.addHook('preHandler', (request, reply, done) => {
+  if (request.body) {
+    request.log.info({ reqID: request.id, body: request.body });
+  }
+  request.log.info({ requestParams: request.params });
+  done();
 });
 
 // IIFE
