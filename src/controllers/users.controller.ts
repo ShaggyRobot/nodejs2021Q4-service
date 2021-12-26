@@ -64,7 +64,6 @@ const updateUser = (req: FastifyRequest<IreqUser>, rep: FastifyReply): void => {
   let users = getUsersDb();
   const userProps = req.body;
   const { id } = req.params;
-
   users = users.map(user => (user.id === id ? { id, ...userProps } : user));
   const user = users.find(usr => usr.id === id);
 
