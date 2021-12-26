@@ -53,6 +53,8 @@
     "eslint-plugin-tsdoc": "^0.2.14",
     "fastify": "^3.24.1",
     "fastify-swagger": "^4.12.6",
+    "pino": "^7.6.1",
+    "pino-pretty": "^7.3.0",
     "uuid": "^8.3.2",
     "yamljs": "0.3.0"
   },

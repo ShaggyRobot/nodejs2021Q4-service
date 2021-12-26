@@ -2,18 +2,17 @@ import Fastify, { FastifyInstance } from 'fastify';
 // import fastifySwagger, { StaticPathSpec } from 'fastify-swagger';
 
 import cfg from './common/config.js';
+import log from './logger/logger.js';
 
 import routeUsers from './routes/users.routes.js';
 import routeTasks from './routes/tasks.routes.js';
 import routeBoards from './routes/boards.routes.js';
 
-const app: FastifyInstance = Fastify({ logger: false });
+const app: FastifyInstance = Fastify({ logger: log });
 
 app.register(routeUsers);
 app.register(routeTasks);
 app.register(routeBoards);
-// app.register(require('./routes/boards.routes'));
-// app.register(require('./routes/tasks.routes'));
 
 // app.register(fastifySwagger, {
 //   mode: 'dynamic',
@@ -28,7 +27,6 @@ app.register(routeBoards);
 (async (): Promise<void> => {
   try {
     app.listen(cfg.PORT || 3000);
-    console.log(`Server is running at localhost:${cfg.PORT}`);
   } catch (error) {
     app.log.error(error);
     process.exit(1);
