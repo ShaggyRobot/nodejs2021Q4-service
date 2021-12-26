@@ -21,10 +21,11 @@ app.addHook('onError', request => {
 });
 
 app.addHook('preHandler', (request, reply, done) => {
-  if (request.body) {
-    request.log.info({ reqID: request.id, body: request.body });
-  }
-  request.log.info({ requestParams: request.params });
+  request.log.info({
+    reqID: request.id,
+    ...(request.body ? { body: request.body } : {}),
+    requestParams: request.params,
+  });
   done();
 });
 
