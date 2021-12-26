@@ -1,5 +1,4 @@
 import Fastify, { FastifyInstance } from 'fastify';
-// import fastifySwagger, { StaticPathSpec } from 'fastify-swagger';
 
 import cfg from './common/config.js';
 import log from './logger/logger.js';
@@ -14,14 +13,11 @@ app.register(routeUsers);
 app.register(routeTasks);
 app.register(routeBoards);
 
-// app.register(fastifySwagger, {
-//   mode: 'dynamic',
-//   routePrefix: '/doc',
-//   exposeRoute: true,
-//   specification: {
-//     path: path.resolve('_dirname', '../doc/api.yaml'),
-//   },
-// });
+app.addHook('onError', (request, reply, error) => {
+  if (error) {
+    process.exit(1);
+  }
+});
 
 // IIFE
 (async (): Promise<void> => {
@@ -32,5 +28,3 @@ app.register(routeBoards);
     process.exit(1);
   }
 })();
-
-// node --loader ts-node/esm src/server.ts
