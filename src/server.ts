@@ -32,7 +32,9 @@ app.addHook('preHandler', (request, reply, done) => {
 // IIFE
 (async (): Promise<void> => {
   try {
-    app.listen(cfg.PORT || 3000);
+    app.listen(cfg.PORT);
+    app.log.info(process.env.NODE_ENV);
+    app.log.igit confinfo('=======>>WOOOOOOOHOOOO<<==========');
   } catch (error) {
     app.log.error(error);
     process.exit(1);

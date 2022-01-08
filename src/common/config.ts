@@ -12,7 +12,10 @@ dotenv.config({
 });
 
 export default {
-  PORT: process.env.PORT,
+  PORT: {
+    port: process.env.PORT ? parseInt(process.env.PORT, 10) : 4000,
+    ...(process.env.NODE_ENV === 'production' && { host: '0.0.0.0' }),
+  },
   NODE_ENV: process.env.NODE_ENV,
   MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
