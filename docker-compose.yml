@@ -2,6 +2,12 @@ version: '3.8'
 services:
   node:
     build: .
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     volumes:
       - ./src:/docker/app/src
       - logs:/docker/app/logs
@@ -14,6 +20,7 @@ services:
 
   postgres:
     build: ./Database
+    restart: on-failure:5
     volumes:
       - database:/var/lib/postgresql/data
     networks:
