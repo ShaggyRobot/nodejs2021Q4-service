@@ -33,8 +33,7 @@ app.addHook('preHandler', (request, reply, done) => {
 (async (): Promise<void> => {
   try {
     app.listen(cfg.PORT);
-    app.log.info(process.env.NODE_ENV);
-    app.log.igit confinfo('=======>>WOOOOOOOHOOOO<<==========');
+    app.log.info(`Running in ${process.env.NODE_ENV} mode.`);
   } catch (error) {
     app.log.error(error);
     process.exit(1);
