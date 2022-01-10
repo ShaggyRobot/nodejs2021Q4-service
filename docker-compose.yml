@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  node:
+    build: .
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    volumes:
+      - ./src:/docker/app/src
+      - logs:/docker/app/logs
+    networks:
+      - njs-net
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+
+  postgres:
+    build: ./Database
+    restart: on-failure:5
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - njs-net
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+networks:
+  njs-net:
+    name: 'njs-net'
+    driver: 'bridge'
+    ipam:
+      driver: default
+      config:
+        - subnet: 198.0.0.0/16
+          gateway: 198.0.0.255
+
+volumes:
+  logs:
+  database:
