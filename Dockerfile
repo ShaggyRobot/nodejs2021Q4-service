@@ -6,3 +6,7 @@ RUN npm install --production
 COPY . .
 EXPOSE 4000
 CMD ["npm", "start"]
+# CMD ["npm", "generate"]
+
+
+# ts-node ./node_modules/typeorm/cli.js migration:generate -n migName -p

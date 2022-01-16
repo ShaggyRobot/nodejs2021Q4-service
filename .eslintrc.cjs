@@ -25,6 +25,8 @@ module.exports = {
     'no-console': 'warn',
     '@typescript-eslint/explicit-function-return-type': 'error',
     'tsdoc/syntax': 'error',
+    '@typescript-eslint/no-unused-vars': 'warn',
+    'no-unused-vars': 'warn',
   },
   settings: {
     'import/parsers': {

@@ -1,0 +1,20 @@
+{
+  "type": "postgres",
+  "name": "njs-postgres",
+  "migrationsRun": false,
+  "host": "198.0.0.2",
+  "port": 5432,
+  "username": "PDBUser",
+  "password": "CoolPass",
+  "database": "PDB1",
+  "synchronize": true,
+  "logging": true,
+  "entities": [
+    "src/postgresDB/entities/*.ts"
+  ],
+  "migrations": ["src/postgresDB/migrations/*.ts"],
+  "cli": {
+    "entitiesDir": "src/postgresDB/entities",
+    "migrationsDir": "src/postgresDB/migrations"
+  }
+}
