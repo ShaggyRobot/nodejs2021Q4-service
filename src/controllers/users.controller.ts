@@ -5,6 +5,7 @@ import { IUser } from '../DB/users.db.js';
 import omitProp from '../utils/omit-prop.js';
 import connect from '../postgresDB/connection.js';
 import User from '../postgresDB/entities/userEntity.js';
+import Task from '../postgresDB/entities/taskEntity.js';
 
 const { getConnection } = typeorm;
 const myConn = connect();
@@ -20,7 +21,6 @@ interface IreqUser extends RequestGenericInterface {
  * @param rep - Outgoing http reply as Fastify reply
  */
 const getUsers = async (req: FastifyRequest, rep: FastifyReply): Promise<void> => {
-  // const users = getUsersDb();
   try {
     const users = await getConnection('myConn')
       .getRepository(User)
@@ -122,6 +122,14 @@ const deleteUser = async (req: FastifyRequest<IreqUser>, rep: FastifyReply): Pro
       .getOneOrFail();
 
     await getConnection('myConn').createQueryBuilder().delete().from(User).where('id = :id', { id }).execute();
+
+    await getConnection('myConn')
+      .createQueryBuilder()
+      .update(Task)
+      .set({ userId: null })
+      .where('userId = :id', { id })
+      .execute();
+
     rep.code(204);
   } catch (error) {
     rep.code(404).send({ message: `User ${id} not found.` });

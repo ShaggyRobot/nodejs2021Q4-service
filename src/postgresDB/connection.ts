@@ -1,6 +1,7 @@
 import typeorm from 'typeorm';
 import cfg from '../common/config.js';
 
+import Task from './entities/taskEntity.js';
 import User from './entities/userEntity.js';
 
 const { createConnection } = typeorm;
@@ -15,7 +16,7 @@ export default function connect(): Promise<typeorm.Connection> {
     username: cfg.PG_USER,
     password: cfg.PG_PASS,
     database: cfg.PG_DB,
-    entities: [User],
+    entities: [User, Task],
     synchronize: true,
   });
 }

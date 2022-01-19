@@ -6,7 +6,7 @@ const Task = {
   properties: {
     id: { type: 'string', format: 'uuid' },
     title: { type: 'string' },
-    order: { type: 'number' },
+    order: { type: ['string', 'number'] },
     description: { type: 'string' },
     userId: { type: ['string', 'null'] },
     boardId: { type: 'string' },

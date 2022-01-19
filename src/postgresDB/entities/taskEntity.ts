@@ -1,21 +1,32 @@
-// import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany, ManyToOne } from 'typeorm';
-// import User from './userEntity';
+import typeorm from 'typeorm';
+import { ExclusionMetadata } from 'typeorm/metadata/ExclusionMetadata';
 
-// @Entity()
-// export default class Task extends BaseEntity {
-//   @PrimaryGeneratedColumn()
-//   id!: string;
+const { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, BaseEntity } = typeorm;
 
-//   @Column()
-//   title!: string;
+@Entity()
+export default class Task extends BaseEntity {
+  // @PrimaryGeneratedColumn()
+  // dbidx!: number;
 
-//   @Column()
-//   order!: string;
+  @PrimaryColumn()
+  // @Column({ unique: true })
+  id!: string;
 
-//   @Column()
-//   description!: string;
+  @Column()
+  title!: string;
 
-//   @ManyToOne(() => User, id => User.id)
-//   userId!: User[];
+  @Column({ nullable: true })
+  order!: number;
 
-// }
+  @Column()
+  description!: string;
+
+  @Column()
+  boardId!: string;
+
+  @Column({ type: 'text', nullable: true })
+  userId!: string | null;
+
+  @Column({ nullable: true })
+  columnId!: string;
+}
