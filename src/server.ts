@@ -1,5 +1,4 @@
 import Fastify, { FastifyInstance } from 'fastify';
-import typeorm from 'typeorm';
 
 import cfg from './common/config.js';
 import log from './logger/logger.js';
@@ -7,8 +6,6 @@ import log from './logger/logger.js';
 import routeUsers from './routes/users.routes.js';
 import routeTasks from './routes/tasks.routes.js';
 import routeBoards from './routes/boards.routes.js';
-
-const { createConnection, Connection, getConnectionOptions } = typeorm;
 
 const app: FastifyInstance = Fastify({ logger: log });
 
@@ -32,9 +29,6 @@ app.addHook('preHandler', (request, reply, done) => {
   done();
 });
 
-const connection = createConnection('njs-postgres');
-
-connection.then(conn => console.log('connected to ======>> ', conn));
 // IIFE
 (async (): Promise<void> => {
   try {

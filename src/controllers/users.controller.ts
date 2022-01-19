@@ -1,8 +1,13 @@
+import typeorm from 'typeorm';
 import { FastifyReply, FastifyRequest, RequestGenericInterface } from 'fastify';
 import { v4 as uuidv4 } from 'uuid';
-import { putUsersDb, getUsersDb, IUser } from '../DB/users.db.js';
-import { putTasksDb, getTasksDb } from '../DB/tasks.db.js';
+import { IUser } from '../DB/users.db.js';
 import omitProp from '../utils/omit-prop.js';
+import connect from '../postgresDB/connection.js';
+import User from '../postgresDB/entities/userEntity.js';
+
+const { getConnection } = typeorm;
+const myConn = connect();
 
 interface IreqUser extends RequestGenericInterface {
   Params: { id: string };
@@ -14,9 +19,19 @@ interface IreqUser extends RequestGenericInterface {
  * @param req - Incoming http request as Fastify request
  * @param rep - Outgoing http reply as Fastify reply
  */
-const getUsers = (req: FastifyRequest, rep: FastifyReply): void => {
-  const users = getUsersDb();
-  rep.send(users.map(user => omitProp(user, 'password')));
+const getUsers = async (req: FastifyRequest, rep: FastifyReply): Promise<void> => {
+  // const users = getUsersDb();
+  try {
+    const users = await getConnection('myConn')
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .select(['user.id', 'user.name', 'user.login'])
+      .getMany();
+
+    rep.send(users);
+  } catch (error) {
+    rep.code(500).send(error);
+  }
 };
 
 /**
@@ -24,14 +39,20 @@ const getUsers = (req: FastifyRequest, rep: FastifyReply): void => {
  * @param req - Incoming http request as Fastify request
  * @param rep - Outgoing http reply as Fastify reply
  */
-const getUser = (req: FastifyRequest<IreqUser>, rep: FastifyReply): void => {
-  const users = getUsersDb();
+const getUser = async (req: FastifyRequest<IreqUser>, rep: FastifyReply): Promise<void> => {
+  // const users = getUsersDb();
   const { id } = req.params;
-
-  const userToSend = users.find(user => user.id === id);
-  if (userToSend) {
-    rep.send(omitProp(userToSend, 'password'));
-  } else {
+  try {
+    const userToSend = await getConnection('myConn')
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .select(['user.id', 'user.name', 'user.login'])
+      .where('user.id = :id', { id })
+      .getOneOrFail();
+    if (userToSend) {
+      rep.send(userToSend);
+    }
+  } catch (error) {
     rep.code(404).send({ message: `User ${id} not found.` });
   }
 };
@@ -41,17 +62,16 @@ const getUser = (req: FastifyRequest<IreqUser>, rep: FastifyReply): void => {
  * @param req - Incoming http request as Fastify request
  * @param rep - Outgoing http reply as Fastify reply
  */
-const addUser = (req: FastifyRequest<IreqUser>, rep: FastifyReply): void => {
-  let users = getUsersDb();
+const addUser = async (req: FastifyRequest<IreqUser>, rep: FastifyReply): Promise<void> => {
   const userProps = req.body;
 
   const user = {
     id: uuidv4(),
     ...userProps,
   };
-  users = [...users, user];
 
-  putUsersDb(users);
+  await getConnection('myConn').createQueryBuilder().insert().into(User).values(user).execute();
+
   rep.code(201).send(omitProp(user, 'password'));
 };
 
@@ -60,16 +80,28 @@ const addUser = (req: FastifyRequest<IreqUser>, rep: FastifyReply): void => {
  * @param req - Incoming http request as Fastify request
  * @param rep - Outgoing http reply as Fastify reply
  */
-const updateUser = (req: FastifyRequest<IreqUser>, rep: FastifyReply): void => {
-  let users = getUsersDb();
+const updateUser = async (req: FastifyRequest<IreqUser>, rep: FastifyReply): Promise<void> => {
   const userProps = req.body;
   const { id } = req.params;
-  users = users.map(user => (user.id === id ? { id, ...userProps } : user));
-  const user = users.find(usr => usr.id === id);
 
-  if (user) {
-    putUsersDb(users);
-    rep.send(omitProp(user, 'password'));
+  try {
+    const user = await getConnection('myConn')
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .getOneOrFail();
+
+    if (user) {
+      await getConnection('myConn')
+        .createQueryBuilder()
+        .update(User)
+        .set({ id, ...userProps })
+        .where('id = :id', { id })
+        .execute();
+      rep.code(200).send({ ...userProps });
+    }
+  } catch (error) {
+    rep.code(404).send({ message: `User ${id} not found.` });
   }
 };
 
@@ -79,24 +111,21 @@ const updateUser = (req: FastifyRequest<IreqUser>, rep: FastifyReply): void => {
  * @param req - Incoming http request as Fastify request
  * @param rep - Outgoing http reply as Fastify reply
  */
-const deleteUser = (req: FastifyRequest<IreqUser>, rep: FastifyReply): void => {
-  let users = getUsersDb();
-  let tasks = getTasksDb();
+const deleteUser = async (req: FastifyRequest<IreqUser>, rep: FastifyReply): Promise<void> => {
   const { id } = req.params;
 
-  users = users.filter(usr => usr.id !== id);
-  tasks = tasks.map(task => {
-    const tsk = task;
-    if (tsk.userId === id) {
-      tsk.userId = null;
-    }
-    return tsk;
-  });
+  try {
+    const user = await getConnection('myConn')
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .getOneOrFail();
 
-  putUsersDb(users);
-  putTasksDb(tasks);
-
-  rep.send({ message: `User ${id} has been removed.` });
+    await getConnection('myConn').createQueryBuilder().delete().from(User).where('id = :id', { id }).execute();
+    rep.code(204);
+  } catch (error) {
+    rep.code(404).send({ message: `User ${id} not found.` });
+  }
 };
 
 export { getUsers, getUser, addUser, updateUser, deleteUser };

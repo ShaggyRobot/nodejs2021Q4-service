@@ -21,4 +21,8 @@ export default {
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
   AUTH_MODE: process.env.AUTH_MODE === 'true',
   LOG_LVL: process.env.LOG_LVL,
+  PG_USER: process.env.POSTGRES_USER,
+  PG_PASS: process.env.POSTGRES_PASSWORD,
+  PG_DB: process.env.POSTGRES_DB,
+  PG_PORT: process.env.POSTGRES_PORT,
 };

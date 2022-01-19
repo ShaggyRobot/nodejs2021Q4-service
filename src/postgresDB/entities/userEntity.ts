@@ -1,10 +1,14 @@
-import typeorm from 'typeorm';
+import typeorm, { Unique } from 'typeorm';
+import uuid from 'uuid';
 
-const { Entity, Column, BaseEntity } = typeorm;
+const { Entity, Column, BaseEntity, PrimaryGeneratedColumn } = typeorm;
 
 @Entity()
 export default class User extends BaseEntity {
-  // @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn()
+  dbidx!: number;
+
+  @Column({ unique: true })
   id!: string;
 
   @Column()
@@ -14,5 +18,5 @@ export default class User extends BaseEntity {
   login!: string;
 
   @Column()
-  pasword!: string;
+  password!: string;
 }
