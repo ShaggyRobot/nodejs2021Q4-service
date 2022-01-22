@@ -1,13 +1,8 @@
 import typeorm from 'typeorm';
-import uuid from 'uuid';
 
-const { Entity, Column, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn } = typeorm;
-
+const { Entity, Column, BaseEntity, PrimaryColumn } = typeorm;
 @Entity()
 export default class User extends BaseEntity {
-  // @PrimaryGeneratedColumn()
-  // dbidx!: number;
-
   @PrimaryColumn({ unique: true })
   id!: string;
 

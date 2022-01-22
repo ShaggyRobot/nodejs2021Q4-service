@@ -1,16 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { FastifyReply, FastifyRequest, RequestGenericInterface } from 'fastify';
 import typeorm from 'typeorm';
-import omitProp from '../utils/omit-prop.js';
 
-import { ITask } from '../DB/tasks.db.js';
-
-import connect from '../postgresDB/connection.js';
+import ITask from '../postgresDB/interfaces/task.interface.js';
 import Task from '../postgresDB/entities/taskEntity.js';
 
 const { getConnection } = typeorm;
-const myConn = connect();
-
 interface IreqTask extends RequestGenericInterface {
   Params: { id: string };
   Body: ITask;
@@ -44,7 +39,7 @@ const getTask = async (req: FastifyRequest<IreqTask>, rep: FastifyReply): Promis
       .where('task.id = :id', { id })
       .getOneOrFail();
 
-    rep.send(omitProp(task, 'dbidx'));
+    rep.send(task);
   } catch (error) {
     rep.code(404).send({ message: `Task with id ${id} not found.` });
   }

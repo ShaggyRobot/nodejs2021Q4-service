@@ -1,15 +1,10 @@
 import typeorm from 'typeorm';
-import { ExclusionMetadata } from 'typeorm/metadata/ExclusionMetadata';
 
-const { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, BaseEntity } = typeorm;
+const { Entity, PrimaryColumn, Column, BaseEntity } = typeorm;
 
 @Entity()
 export default class Task extends BaseEntity {
-  // @PrimaryGeneratedColumn()
-  // dbidx!: number;
-
   @PrimaryColumn()
-  // @Column({ unique: true })
   id!: string;
 
   @Column()

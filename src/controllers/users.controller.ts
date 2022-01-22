@@ -1,15 +1,11 @@
 import typeorm from 'typeorm';
 import { FastifyReply, FastifyRequest, RequestGenericInterface } from 'fastify';
 import { v4 as uuidv4 } from 'uuid';
-import { IUser } from '../DB/users.db.js';
-import omitProp from '../utils/omit-prop.js';
-import connect from '../postgresDB/connection.js';
+import IUser from '../postgresDB/interfaces/user.interface.js';
 import User from '../postgresDB/entities/userEntity.js';
 import Task from '../postgresDB/entities/taskEntity.js';
 
 const { getConnection } = typeorm;
-const myConn = connect();
-
 interface IreqUser extends RequestGenericInterface {
   Params: { id: string };
   Body: IUser;
@@ -71,8 +67,9 @@ const addUser = async (req: FastifyRequest<IreqUser>, rep: FastifyReply): Promis
   };
 
   await getConnection('myConn').createQueryBuilder().insert().into(User).values(user).execute();
+  const { password, ...userButPassword } = user;
 
-  rep.code(201).send(omitProp(user, 'password'));
+  rep.code(201).send(userButPassword);
 };
 
 /**

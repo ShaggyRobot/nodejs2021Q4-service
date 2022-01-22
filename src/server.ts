@@ -7,6 +7,8 @@ import routeUsers from './routes/users.routes.js';
 import routeTasks from './routes/tasks.routes.js';
 import routeBoards from './routes/boards.routes.js';
 
+import connectDb from './postgresDB/connection.js';
+
 const app: FastifyInstance = Fastify({ logger: log });
 
 app.register(routeUsers);
@@ -30,12 +32,14 @@ app.addHook('preHandler', (request, reply, done) => {
 });
 
 // IIFE
-(async (): Promise<void> => {
-  try {
-    app.listen(cfg.PORT);
-    app.log.info(`Running in ${process.env.NODE_ENV} mode.`);
-  } catch (error) {
-    app.log.error(error);
-    process.exit(1);
-  }
-})();
+connectDb().then(() => {
+  (async (): Promise<void> => {
+    try {
+      app.listen(cfg.PORT);
+      app.log.info(`Running in ${process.env.NODE_ENV} mode.`);
+    } catch (error) {
+      app.log.error(error);
+      process.exit(1);
+    }
+  })();
+});

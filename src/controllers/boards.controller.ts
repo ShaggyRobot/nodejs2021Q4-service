@@ -1,37 +1,49 @@
 import { v4 as uuidv4 } from 'uuid';
+import typeorm from 'typeorm';
 import { FastifyReply, FastifyRequest, RequestGenericInterface } from 'fastify';
 
-import { getBoardsDb, putBoardsDb, IBoard } from '../DB/boards.db.js';
-import { getTasksDb, putTasksDb } from '../DB/tasks.db.js';
+import { IColumn } from '@src/postgresDB/interfaces/column.interface.js';
+
+import Board from '../postgresDB/entities/boardEntity.js';
+import Task from '../postgresDB/entities/taskEntity.js';
+
+const { getConnection } = typeorm;
 
 interface IreqBoards extends RequestGenericInterface {
   Params: { id: string };
-  Body: IBoard;
+  Body: { title: string; columns: IColumn[] };
 }
 
 // GET /boards - get all boards
-const getBoards = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
-  const boards = getBoardsDb();
-  rep.send(boards);
+const getBoards = async (req: FastifyRequest<IreqBoards>, rep: FastifyReply): Promise<void> => {
+  try {
+    const boards = await getConnection('myConn').getRepository(Board).createQueryBuilder('board').getMany();
+
+    rep.send(boards);
+  } catch (error) {
+    rep.code(500).send(error);
+  }
 };
 
 // GET /boards/:boardId - get the board by id
-const getBoard = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
-  const boards = getBoardsDb();
+const getBoard = async (req: FastifyRequest<IreqBoards>, rep: FastifyReply): Promise<void> => {
   const { id } = req.params;
 
-  const boardToSend = boards.find(board => board.id === id);
+  try {
+    const boardToSend = await getConnection('myConn')
+      .getRepository(Board)
+      .createQueryBuilder('board')
+      .where('board.id = :id', { id })
+      .getOneOrFail();
 
-  if (boardToSend) {
     rep.send(boardToSend);
-  } else {
-    rep.code(404).send({ message: `Board ${id} not found.` });
+  } catch (error) {
+    rep.code(404).send({ message: `Board with id ${id} not found.` });
   }
 };
 
 // POST /boards - create board
-const addBoard = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
-  let boards = getBoardsDb();
+const addBoard = async (req: FastifyRequest<IreqBoards>, rep: FastifyReply): Promise<void> => {
   const boardProps = req.body;
 
   const board = {
@@ -39,38 +51,54 @@ const addBoard = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
     ...boardProps,
   };
 
-  boards = [...boards, board];
-  putBoardsDb(boards);
-
+  await getConnection('myConn').createQueryBuilder().insert().into(Board).values(board).execute();
   rep.code(201).send(board);
 };
 
 // PUT /boards/:boardId - update board
-const updateBoard = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
-  let boards = getBoardsDb();
+const updateBoard = async (req: FastifyRequest<IreqBoards>, rep: FastifyReply): Promise<void> => {
   const boardProps = req.body;
   const { id } = req.params;
 
-  boards = boards.map(board => (board.id === id ? { id, ...boardProps } : board));
-  const board = boards.find(brd => brd.id === id);
+  try {
+    const board = await getConnection('myConn')
+      .getRepository(Board)
+      .createQueryBuilder('board')
+      .where('board.id = :id', { id })
+      .getOneOrFail();
 
-  putBoardsDb(boards);
-  rep.send(board);
+    await getConnection('myConn')
+      .createQueryBuilder()
+      .update(Board)
+      .set({ id, ...boardProps })
+      .where('id = :id', { id })
+      .execute();
+
+    rep.code(200).send({ ...boardProps });
+  } catch (error) {
+    rep.code(404).send({ message: `Board with id ${id} not found.` });
+  }
 };
 
 // DELETE /boards/:boardId - delete board Tasks should be deleted as well.
-const deleteBoard = (req: FastifyRequest<IreqBoards>, rep: FastifyReply): void => {
-  let boards = getBoardsDb();
-  let tasks = getTasksDb();
+const deleteBoard = async (req: FastifyRequest<IreqBoards>, rep: FastifyReply): Promise<void> => {
   const { id } = req.params;
 
-  boards = boards.filter(brd => brd.id !== id);
-  tasks = tasks.filter(tsk => tsk.boardId !== id);
+  try {
+    const board = await getConnection('myConn')
+      .getRepository(Board)
+      .createQueryBuilder('board')
+      .where('board.id = :id', { id })
+      .getOneOrFail();
 
-  putBoardsDb(boards);
-  putTasksDb(tasks);
+    await getConnection('myConn').createQueryBuilder().delete().from(Board).where('id = :id', { id }).execute();
 
-  rep.send({ message: `Board ${id} has been removed.` });
+    await getConnection('myConn').createQueryBuilder().delete().from(Task).where('boardId = :id', { id }).execute();
+
+    rep.code(204);
+  } catch (error) {
+    rep.code(404).send({ message: `Board with id ${id} not found.` });
+  }
 };
 
 export { getBoard, getBoards, addBoard, updateBoard, deleteBoard };
