@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import jwt from 'jsonwebtoken';
 import cfg from '../common/config.js';
 
-const unguardedPaths = ['/login'];
+const unguardedPaths = ['/login', '/', '/doc'];
 
 async function authGuard(req: FastifyRequest, rep: FastifyReply): Promise<void> {
   if (!unguardedPaths.includes(req.url)) {
