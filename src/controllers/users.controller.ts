@@ -1,6 +1,8 @@
 import typeorm from 'typeorm';
 import { FastifyReply, FastifyRequest, RequestGenericInterface } from 'fastify';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
+
 import IUser from '../postgresDB/interfaces/user.interface.js';
 import User from '../postgresDB/entities/userEntity.js';
 import Task from '../postgresDB/entities/taskEntity.js';
@@ -65,6 +67,8 @@ const addUser = async (req: FastifyRequest<IreqUser>, rep: FastifyReply): Promis
     id: uuidv4(),
     ...userProps,
   };
+
+  user.password = bcrypt.hashSync(user.password, 10);
 
   await getConnection('myConn').createQueryBuilder().insert().into(User).values(user).execute();
   const { password, ...userButPassword } = user;

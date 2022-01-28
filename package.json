@@ -12,7 +12,7 @@
     "generate": "ts-node ./node_modules/typeorm/cli.js migration:generate -c myConn -n myGenerated",
     "lint": "eslint --ext .js,.ts --fix src/",
     "test": "cross-env DEBUG=rs:* jest --verbose --testMatch \"<rootDir>test/e2e/test/*.test.js\" --noStackTrace --runInBand",
-    "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace"
+    "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --verbose --noStackTrace"
   },
   "nodemonConfig": {
     "exec": "node --experimental-modules --loader ts-node/esm",
@@ -50,7 +50,9 @@
     ]
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/es6-shim": "^0.31.42",
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.0",
     "@types/uuid": "^8.3.3",
     "bcrypt": "^5.0.1",
